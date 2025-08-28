@@ -1,5 +1,6 @@
 import React from 'react';
 import AsistenciaList from './components/AsistenciaList';
+import FormAlum from './components/FormAlum';
 
 function App() {
   return (
