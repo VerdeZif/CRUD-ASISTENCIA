@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Asistencia{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    <h4 class="mb-0">Registrar Asistencia</h4>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        {{ form.estudiante.label_tag }}
+        {{ form.estudiante }}
+        {{ form.estudiante.errors }}
+      </div>
+      <div class="mb-3">
+        {{ form.fecha.label_tag }}
+        {{ form.fecha }}
+        {{ form.fecha.errors }}
+      </div>
+      <div class="form-check mb-3">
+        {{ form.presente }}
+        {{ form.presente.label_tag }}
+        {{ form.presente.errors }}
+      </div>
+      <button type="submit" class="btn btn-success">💾 Guardar</button>
+      <a href="{% url 'asistencia_list' %}" class="btn btn-secondary">↩ Volver</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<h2>Detalle del Estudiante</h2>
+
+<p><strong>ID:</strong> {{ estudiante.id }}</p>
+<p><strong>Nombre:</strong> {{ estudiante.nombre }}</p>
+<p><strong>Apellido:</strong> {{ estudiante.apellido }}</p>
+
+<a href="{% url 'estudiante_update' estudiante.pk %}">Editar</a> |
+<a href="{% url 'estudiante_delete' estudiante.pk %}">Eliminar</a> |
+<a href="{% url 'estudiante_list' %}">Volver</a>

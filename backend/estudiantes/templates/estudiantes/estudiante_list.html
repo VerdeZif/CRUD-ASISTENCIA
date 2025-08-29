@@ -1,0 +1,15 @@
+<h2>Lista de Estudiantes</h2>
+<a href="{% url 'estudiante_create' %}">➕ Nuevo Estudiante</a>
+
+<ul>
+  {% for estudiante in estudiantes %}
+    <li>
+      {{ estudiante.nombre }} {{ estudiante.apellido }}
+      [<a href="{% url 'estudiante_detail' estudiante.pk %}">Ver</a>]
+      [<a href="{% url 'estudiante_update' estudiante.pk %}">Editar</a>]
+      [<a href="{% url 'estudiante_delete' estudiante.pk %}">Eliminar</a>]
+    </li>
+  {% empty %}
+    <li>No hay estudiantes registrados.</li>
+  {% endfor %}
+</ul>

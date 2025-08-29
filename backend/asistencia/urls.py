@@ -1,14 +1,27 @@
-from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from estudiantes.views import EstudianteViewSet
-from asistencia.views import AsistenciaViewSet
+from .views import (
+    AsistenciaViewSet,
+    AsistenciaListView,
+    AsistenciaDetailView,
+    AsistenciaCreateView,
+    AsistenciaUpdateView,
+    AsistenciaDeleteView,
+)
 
+# -------- API con DRF --------
 router = DefaultRouter()
-router.register(r"estudiantes", EstudianteViewSet)
-router.register(r"asistencias", AsistenciaViewSet)
+router.register(r"api/asistencias", AsistenciaViewSet, basename="asistencia")
 
+# -------- Vistas Django (HTML) --------
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),  # todas las rutas de API
+    # CRUD HTML
+    path("", AsistenciaListView.as_view(), name="asistencia_list"),
+    path("<int:pk>/", AsistenciaDetailView.as_view(), name="asistencia_detail"),
+    path("crear/", AsistenciaCreateView.as_view(), name="asistencia_create"),
+    path("<int:pk>/editar/", AsistenciaUpdateView.as_view(), name="asistencia_update"),
+    path("<int:pk>/eliminar/", AsistenciaDeleteView.as_view(), name="asistencia_delete"),
+
+    # API
+    path("", include(router.urls)),
 ]

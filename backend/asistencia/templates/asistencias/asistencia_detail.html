@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Detalle de Asistencia</h2>
+  <p><strong>Estudiante:</strong> {{ asistencia.estudiante }}</p>
+  <p><strong>Fecha:</strong> {{ asistencia.fecha }}</p>
+  <p><strong>Presente:</strong> {% if asistencia.presente %}✅ Sí{% else %}❌ No{% endif %}</p>
+
+  <a href="{% url 'asistencia_update' asistencia.pk %}" class="btn btn-warning">✏️ Editar</a>
+  <a href="{% url 'asistencia_delete' asistencia.pk %}" class="btn btn-danger">🗑️ Eliminar</a>
+  <a href="{% url 'asistencia_list' %}" class="btn btn-secondary">🔙 Volver</a>
+</div>
+{% endblock %}
