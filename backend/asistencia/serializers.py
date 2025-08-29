@@ -25,17 +25,12 @@ class AsistenciaSerializer(serializers.ModelSerializer):
         estudiante = data.get("estudiante")
         fecha = data.get("fecha")
 
-        # Cuando se está actualizando, ignorar el mismo registro
-        instance = getattr(self, "instance", None)
+        qs = Asistencia.objects.filter(estudiante=estudiante, fecha=fecha)
 
-        existe = Asistencia.objects.filter(
-            estudiante=estudiante,
-            fecha=fecha
-        )
-        if instance:
-            existe = existe.exclude(id=instance.id)
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
 
-        if existe.exists():
+        if qs.exists():
             raise serializers.ValidationError(
                 {"non_field_errors": ["Ya existe un registro de asistencia para este estudiante en esta fecha."]}
             )
