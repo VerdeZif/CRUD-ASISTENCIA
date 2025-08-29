@@ -1,35 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormAlum from './FormAlum';
+import '../App.css'
 
 function AsistenciaList() {
+  
   const [asistencias, setAsistencias] = useState([]);
 
   const handleAgregar = (nuevo) => {
     setAsistencias([...asistencias, nuevo]);
   };
-
+  
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/asistencias/")
-      .then((response) => {
-        setAsistencias(response.data);
-        localStorage.setItem("pre-lista", JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.error(error);
-        const guardado = localStorage.getItem("pre-lista");
-        if (guardado) {
-          setAsistencias(JSON.parse(guardado));
-        }   
-      });
+
+    // --- DATOS SIMULADOS PARA PRUEBAS ---
+    const datosMock = [
+      { id: 1, nombre: "Juan", apellido: "Pérez", matricula: "si", asistencia: "Presente", fecha: "2025-08-28" },
+      { id: 2, nombre: "Ana", apellido: "Gómez", matricula: "no", asistencia: "Inasistencia", fecha: "2025-08-27" },
+    ];
+    setAsistencias(datosMock);
+
+    // axios.get("http://127.0.0.1:8000/api/asistencias/")
+    //   .then((response) => {
+    //     setAsistencias(response.data);
+        
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+           
+    //   });
   }, []);
 
   return (
-    <div>
-      <div className='main-formn'>
+    <div className='cont'>
+      <div className='main-form'>
+        <p>🧑‍💻</p>
         <FormAlum onAgregar={handleAgregar} />
       </div>
-
+      
       <div className='main-list'>
         <table>
           <thead>
@@ -55,32 +63,38 @@ function AsistenciaList() {
                   <td>{ob.nombre}</td>
                   <td>{ob.apellido}</td>
                   <td>
-                    <select
-                      value={ob.asistencia}
-                      onChange={async (e) => {
-                        const valor = e.target.value;
-                        const fecha = new Date().toLocaleDateString();
+                      <select
+                        value={ob.asistencia}
+                        onChange={async (e) => {
+                          const valor = e.target.value;
+                          const fecha = new Date().toLocaleDateString();
 
-                        try {
-                          await axios.patch(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`, {
-                            asistencia: valor,
-                            fecha: fecha
-                          });
+                           // --- ACTUALIZAR ESTADO LOCAL (mock)
+                        const nuevas = [...asistencias];
+                        nuevas[index].asistencia = valor;
+                        nuevas[index].fecha = fecha;
+                        setAsistencias(nuevas);
 
-                          const nuevas = [...asistencias];
-                          nuevas[index].asistencia = valor;
-                          nuevas[index].fecha = fecha;
-                          setAsistencias(nuevas);
-                        } catch (error) {
-                          console.error(error);
-                          alert("❌ Error al guardar asistencia");
-                        }
-                      }}
-                    >
-                      <option value="">Seleccionar</option>
-                      <option value="Presente">Presente</option>
-                      <option value="Inasistencia">Inasistencia</option>
-                    </select>
+                          // try {
+                          //   await axios.patch(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`, {
+                          //     asistencia: valor,
+                          //     fecha: fecha
+                          //   });
+
+                          //   const nuevas = [...asistencias];
+                          //   nuevas[index].asistencia = valor;
+                          //   nuevas[index].fecha = fecha;
+                          //   setAsistencias(nuevas);
+                          // } catch (error) {
+                          //   console.error(error);
+                          //   alert("❌ Error al guardar asistencia");
+                          // }
+                        }}
+                      >
+                        <option value="">Seleccionar</option>
+                        <option value="Presente">Presente</option>
+                        <option value="Inasistencia">Inasistencia</option>
+                      </select>
                   </td>
                   <td>{ob.fecha}</td>
                   <td>
@@ -90,20 +104,25 @@ function AsistenciaList() {
                         const nuevoApellido = prompt("Nuevo apellido:", ob.apellido);
 
                         if (nuevoNombre && nuevoApellido) {
-                          try {
-                            await axios.patch(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`, {
-                              nombre: nuevoNombre,
-                              apellido: nuevoApellido
-                            });
+                          // --- ACTUALIZAR ESTADO LOCAL (mock)
+                          const nuevas = [...asistencias];
+                          nuevas[index].nombre = nuevoNombre;
+                          nuevas[index].apellido = nuevoApellido;
+                          setAsistencias(nuevas);
+                          // try {
+                          //   await axios.patch(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`, {
+                          //     nombre: nuevoNombre,
+                          //     apellido: nuevoApellido
+                          //   });
                             
-                            const nuevas = [...asistencias];
-                            nuevas[index].nombre = nuevoNombre;
-                            nuevas[index].apellido = nuevoApellido;
-                            setAsistencias(nuevas);
-                          } catch (error) {
-                            console.error(error);
-                            alert("❌ Error al actualizar estudiante");
-                          }
+                          //   const nuevas = [...asistencias];
+                          //   nuevas[index].nombre = nuevoNombre;
+                          //   nuevas[index].apellido = nuevoApellido;
+                          //   setAsistencias(nuevas);
+                          // } catch (error) {
+                          //   console.error(error);
+                          //   alert("❌ Error al actualizar estudiante");
+                          // }
                         }
                       }}
                     >
@@ -113,14 +132,18 @@ function AsistenciaList() {
                     <button
                       onClick={async () => {
                         if (window.confirm("¿Realmente lo eliminará?")) {
-                          try {
-                            await axios.delete(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`);
-                            const nuevas = asistencias.filter((_, i) => i !== index);
-                            setAsistencias(nuevas);
-                          } catch (error) {
-                            console.error(error);
-                            alert("❌ Error al eliminar estudiante");
-                          }
+                          // --- ELIMINAR LOCALMENTE (mock)
+                          const nuevas = asistencias.filter((_, i) => i !== index);
+                          setAsistencias(nuevas);
+                          
+                          // try {
+                          //   await axios.delete(`http://127.0.0.1:8000/api/asistencias/${ob.id}/`);
+                          //   const nuevas = asistencias.filter((_, i) => i !== index);
+                          //   setAsistencias(nuevas);
+                          // } catch (error) {
+                          //   console.error(error);
+                          //   alert("❌ Error al eliminar estudiante");
+                          // }
                         }
                       }}
                     >
